@@ -5,29 +5,56 @@
 
   <meta
     name="viewport"
-    content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
   >
 
-  <title>Mi Primera App AR – Análisis de Tecnologías Emergentes</title>
+  <title>Mi Primera App AR</title>
 
-  <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
-
-  <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+  <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+  <script src="https://raw.githack.com/AR-js-org/AR.js/3.4.8/aframe/build/aframe-ar.js"></script>
 </head>
 
 <body style="margin: 0; overflow: hidden;">
 
+  <div
+    id="status"
+    style="
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      z-index: 10;
+      background: rgba(0,0,0,0.7);
+      color: white;
+      padding: 10px;
+      font-family: Arial;
+      border-radius: 6px;
+    "
+  >
+    Buscando marcador Hiro...
+  </div>
+
   <a-scene
     embedded
-    arjs="sourceType: webcam; debugUIEnabled: false;"
+    vr-mode-ui="enabled: false"
+    renderer="antialias: true; alpha: true;"
+    arjs="sourceType: webcam; trackingMethod: best; debugUIEnabled: false;"
   >
 
-    <a-marker preset="hiro">
+    <a-marker
+      preset="hiro"
+      emitevents="true"
+      smooth="true"
+      smooth-count="10"
+      smooth-tolerance="0.01"
+      smooth-threshold="5"
+      id="hiro-marker"
+    >
 
       <a-box
         position="0 0.5 0"
+        scale="1 1 1"
         color="#4CC3D9"
-        material="opacity: 0.8;"
+        material="opacity: 0.9; transparent: true;"
         animation="property: rotation; to: 0 360 0; loop: true; dur: 3000;"
       >
       </a-box>
@@ -37,6 +64,21 @@
     <a-entity camera></a-entity>
 
   </a-scene>
+
+  <script>
+    const marker = document.querySelector("#hiro-marker");
+    const status = document.querySelector("#status");
+
+    marker.addEventListener("markerFound", () => {
+      status.textContent = "Marcador Hiro detectado";
+      status.style.background = "green";
+    });
+
+    marker.addEventListener("markerLost", () => {
+      status.textContent = "Buscando marcador Hiro...";
+      status.style.background = "rgba(0,0,0,0.7)";
+    });
+  </script>
 
 </body>
 </html>
